@@ -3,6 +3,7 @@ package br.com.unicubos.cats.main.ui
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -26,7 +27,6 @@ class MainActivity : AppCompatActivity() {
 
         initUi()
         initObservables()
-        viewModel.getCats()
     }
 
     private fun initUi() {
@@ -43,8 +43,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initObservables() {
+        viewModel.isLoading.observe(this, Observer {
+            if (it == true) {
+                progressBar?.visibility = View.VISIBLE
+            } else {
+                progressBar?.visibility = View.GONE
+            }
+        })
         viewModel.catList.observe(this, Observer { list ->
-            adapter.addItems(list)
+            adapter.submitList(list)
         })
     }
 
